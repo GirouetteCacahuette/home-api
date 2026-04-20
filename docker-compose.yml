@@ -1,0 +1,14 @@
+services:
+  api:
+    build: .
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      - PORT=8000
+      - HOST=0.0.0.0
+      - NODE_ENV=development
+      - LOG_LEVEL=info
+    env_file:
+      - path: ./.env
+        required: false
+    restart: unless-stopped
