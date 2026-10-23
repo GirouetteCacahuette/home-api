@@ -11,4 +11,6 @@ export const config = {
   host: getEnv('HOST', '0.0.0.0'),
   nodeEnv: getEnv('NODE_ENV', 'development'),
   logLevel: getEnv('LOG_LEVEL', 'info'),
+  upstreamTimeoutMs: parseInt(getEnv('UPSTREAM_TIMEOUT_MS', '5000'), 10),
+  dogCeoBaseUrl: getEnv('DOG_CEO_BASE_URL', 'https://dog.ceo/api'),
 };

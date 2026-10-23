@@ -7,12 +7,13 @@ export async function registerSwagger(fastify: FastifyInstance) {
     openapi: {
       info: {
         title: 'Home API',
-        description: 'Universal API for home automation and service integration',
+        description:
+          'Purpose-built Operations over public services and self-hosted apps, for the Home network only',
         version: '1.0.0',
       },
       tags: [
-        { name: 'health', description: 'Health and readiness endpoints' },
-        { name: 'http', description: 'Outbound HTTP call endpoints' },
+        { name: 'health', description: 'Liveness check' },
+        { name: 'dogs', description: 'Dog pictures (Upstream: dog.ceo)' },
       ],
     },
   });

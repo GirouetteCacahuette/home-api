@@ -6,9 +6,18 @@ services:
     environment:
       - PORT=8000
       - HOST=0.0.0.0
-      - NODE_ENV=development
+      - NODE_ENV=production
       - LOG_LEVEL=info
     env_file:
       - path: ./.env
         required: false
     restart: unless-stopped
+    # To let future Operations reach other self-hosted apps by container name,
+    # join their Docker network (it must already exist):
+    # networks:
+    #   - apps
+
+# networks:
+#   apps:
+#     external: true
+#     name: <your-apps-network>

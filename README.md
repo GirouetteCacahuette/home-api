@@ -1,6 +1,10 @@
 # home-api
 
-Universal API for home automation and service integration. Built with Node.js, TypeScript, and Fastify.
+A personal API of purpose-built **Operations** over public services and self-hosted apps, meant to be called from iOS Shortcuts or a browser. Built with Node.js, TypeScript, and Fastify.
+
+It is reachable from the **Home network** only (LAN + Tailscale) and has no authentication on purpose; see [ADR 0002](docs/adr/0002-home-network-is-the-only-auth.md). Never expose it through a public reverse proxy.
+
+Vocabulary lives in [CONTEXT.md](CONTEXT.md); decisions in [docs/adr](docs/adr).
 
 ## Prerequisites
 
@@ -43,53 +47,43 @@ docker compose up
 | HOST      | `0.0.0.0`     | Host address to bind     |
 | NODE_ENV  | `development` | Runtime environment      |
 | LOG_LEVEL | `info`        | Pino log level           |
+| UPSTREAM_TIMEOUT_MS | `5000` | Timeout for each call to an Upstream |
+| DOG_CEO_BASE_URL | `https://dog.ceo/api` | dog.ceo API base URL |
 
 ## API Endpoints
 
 | Method | Path              | Description              |
 |--------|-------------------|--------------------------|
 | GET    | `/health`         | Liveness check           |
-| GET    | `/ready`          | Readiness check          |
-| POST   | `/api/v1/http/call` | Make an outbound HTTP call |
+| GET    | `/dogs/{breed}/random` | Random image of a breed, returned as image bytes (e.g. `/dogs/pug/random`) |
 | GET    | `/docs`           | Swagger UI               |
 
-## How to Add a New Route
+Operations are grouped by intent (`/dogs`, later `/budget`, `/tasks`), never by Upstream name; see [ADR 0001](docs/adr/0001-operations-grouped-by-intent.md). There is no URL prefix, so `health` and `docs` are reserved.
 
-1. **Create a route file** in `src/routes/`, e.g. `src/routes/myfeature.ts`:
+### Errors
 
-```typescript
-import { FastifyInstance } from 'fastify';
+Every failure answers with an HTTP status and the same JSON body:
 
-export async function myFeatureRoutes(fastify: FastifyInstance) {
-  fastify.get('/myfeature', {
-    schema: {
-      tags: ['myfeature'],
-      summary: 'My feature endpoint',
-      response: {
-        200: {
-          type: 'object',
-          properties: { message: { type: 'string' } },
-        },
-      },
-    },
-  }, async () => {
-    return { message: 'Hello from my feature!' };
-  });
-}
+```json
+{ "error": "unknown_breed", "message": "dog.ceo has no breed \"unicorn\"" }
 ```
 
-2. **Register the route** in `src/server.ts`:
+| Status | `error`            | Meaning                                 |
+|--------|--------------------|-----------------------------------------|
+| 400    | `invalid_request`  | Malformed parameters                    |
+| 404    | `unknown_breed`    | dog.ceo has no such breed               |
+| 404    | `not_found`        | No Operation at that path               |
+| 502    | `upstream_failed`  | An Upstream errored or was unreachable  |
+| 504    | `upstream_timeout` | An Upstream did not answer in time      |
 
-```typescript
-import { myFeatureRoutes } from './routes/myfeature.js';
+In iOS Shortcuts, "Get Contents of URL" does not stop on errors: check whether the result has an `error` key before using it.
 
-// Inside buildServer():
-await fastify.register(myFeatureRoutes, { prefix: '/api/v1' });
-```
+## How to Add a New Operation
 
-3. **Add a Swagger tag** (optional) in `src/plugins/swagger.ts` under the `tags` array.
-
-4. **Write tests** in `tests/myfeature.test.ts` using `server.inject(...)`.
+1. If it needs a new Upstream, add a client in `src/upstreams/` that throws `OperationError` (from `src/errors.ts`) on failure, and wire it into `Upstreams` in `src/server.ts` so tests can inject a fake.
+2. Add a route file in `src/routes/` named after the intent (e.g. `budget.ts`), using `ErrorBody` for its `4xx`/`5xx` response schemas, and register it in `buildServer()`.
+3. Add a Swagger tag in `src/plugins/swagger.ts`.
+4. Write tests in `tests/` with `server.inject(...)` and a fake Upstream (see `tests/dogs.test.ts`).
 
 ## Scripts
 

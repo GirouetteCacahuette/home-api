@@ -1,10 +1,16 @@
 import Fastify from 'fastify';
 import { config } from './config.js';
+import { registerErrorHandling } from './errors.js';
 import { registerSwagger } from './plugins/swagger.js';
 import { healthRoutes } from './routes/health.js';
-import { httpRoutes } from './routes/http.js';
+import { dogRoutes } from './routes/dogs.js';
+import { createDogCeo, DogImages } from './upstreams/dog-ceo.js';
 
-export async function buildServer() {
+export interface Upstreams {
+  dogImages: DogImages;
+}
+
+export async function buildServer(upstreams: Partial<Upstreams> = {}) {
   const fastify = Fastify({
     logger: {
       level: config.logLevel,
@@ -15,10 +21,15 @@ export async function buildServer() {
     },
   });
 
+  const dogImages =
+    upstreams.dogImages ??
+    createDogCeo({ baseUrl: config.dogCeoBaseUrl, timeoutMs: config.upstreamTimeoutMs });
+
+  registerErrorHandling(fastify);
   await registerSwagger(fastify);
 
   await fastify.register(healthRoutes);
-  await fastify.register(httpRoutes, { prefix: '/api/v1' });
+  await fastify.register(dogRoutes, { dogImages });
 
   return fastify;
 }
