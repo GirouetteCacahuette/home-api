@@ -1,6 +1,6 @@
 # Operations are grouped by intent, not by Upstream
 
-Clients (mainly iOS Shortcuts) hard-code Operation URLs, so those URLs are effectively a permanent contract. We name and group Operations by what they do (`/dogs/{breed}/random`, later `/budget/...`, `/tasks/...`) rather than by the Upstream that fulfils them (`/dog-ceo/...`, `/actual/...`, `/vikunja/...`), so an Upstream can be replaced (dog.ceo shutting down, moving off Vikunja) without editing any Shortcut. The cost is that the URL no longer says which app sits behind it; the code and `/docs` carry that mapping.
+Clients (mainly iOS Shortcuts) hard-code Operation URLs, so those URLs are effectively a permanent contract. We name and group Operations by what they do (`/dogs/{breed}/random`, later `/budget/...`, `/tasks/...`) rather than by the Upstream that fulfils them (`/dog-ceo/...`, `/actual/...`, `/vikunja/...`), so an Upstream can be replaced (dog.ceo shutting down, moving off Vikunja) without editing any Shortcut. The cost is that the URL no longer says which app sits behind it; the code and `/docs` carry that mapping. There is no URL prefix, so `health`, `docs` and `ui` (the static page served at `/ui/`) are reserved and never name an intent.
 
 ## Considered Options
 

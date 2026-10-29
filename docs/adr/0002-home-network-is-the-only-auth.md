@@ -5,4 +5,4 @@ home-api is reachable only from the LAN and the Tailscale tailnet, and it delibe
 ## Consequences
 
 - Any device on the LAN or tailnet (IoT gadgets, guests on the Wi-Fi, shared tailnet nodes) can call every Operation.
-- Revisit this decision before adding the first Operation that writes to a private Upstream (e.g. adding a transaction in Actual or creating a task in Vikunja).
+- Revisit this decision before adding the first Operation that writes to a private Upstream (e.g. adding a transaction in Actual or creating a task in Vikunja). Revisited in [ADR 0003](0003-write-operations-stay-unauthenticated.md): still no credentials, with access narrowed at the network layer.
