@@ -14,4 +14,8 @@ export default [
       '@typescript-eslint/explicit-function-return-type': 'off',
     },
   },
+  {
+    files: ['ui/**/*.js'],
+    languageOptions: { globals: globals.browser, sourceType: 'script' },
+  },
 ];

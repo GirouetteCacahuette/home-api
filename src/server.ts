@@ -5,6 +5,7 @@ import { registerSwagger } from './plugins/swagger.js';
 import { healthRoutes } from './routes/health.js';
 import { dogRoutes } from './routes/dogs.js';
 import { budgetRoutes } from './routes/budget.js';
+import { uiRoutes } from './routes/ui.js';
 import { SharedExpensePreviews } from './shared-expense-previews.js';
 import { createDogCeo, DogImages } from './upstreams/dog-ceo.js';
 import {
@@ -55,6 +56,7 @@ export async function buildServer(upstreams: Partial<Upstreams> = {}) {
     homeCurrency: config.homeCurrency,
     previews: new SharedExpensePreviews(PREVIEW_TTL_MS),
   });
+  await fastify.register(uiRoutes);
 
   return fastify;
 }

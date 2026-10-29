@@ -1,0 +1,203 @@
+:root {
+  color-scheme: light dark;
+  --fg: #1d1d1f;
+  --bg: #ffffff;
+  --muted: #6e6e73;
+  --border: #c7c7cc;
+  --accent: #0a66c2;
+  --danger: #b3261e;
+  --danger-bg: #fdecea;
+  --ok: #1b7f3b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #f2f2f7;
+    --bg: #1c1c1e;
+    --muted: #a1a1a6;
+    --border: #48484a;
+    --accent: #4da3ff;
+    --danger: #ff8a80;
+    --danger-bg: #3a1d1b;
+    --ok: #6fd28f;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font:
+    16px/1.5 system-ui,
+    -apple-system,
+    sans-serif;
+  color: var(--fg);
+  background: var(--bg);
+}
+
+main {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+h1 {
+  font-size: 1.25rem;
+  color: var(--muted);
+}
+
+label,
+legend {
+  display: block;
+  font-weight: 600;
+  margin: 1rem 0 0.25rem;
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+input[type='text'] {
+  width: 100%;
+  min-width: 0;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  color: inherit;
+  background: transparent;
+}
+
+button {
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: 0;
+  border-radius: 0.5rem;
+  color: #fff;
+  background: var(--accent);
+  cursor: pointer;
+}
+
+button.secondary {
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid var(--border);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+#add-button,
+#restart-button {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.muted,
+.hint {
+  color: var(--muted);
+}
+
+.hint,
+.status {
+  margin: 0.25rem 0;
+  min-height: 1.5em;
+}
+
+.error {
+  color: var(--danger);
+}
+
+.blocked {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.member {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  padding: 0.5rem 0;
+  font-weight: normal;
+  margin: 0;
+}
+
+.member input {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.15rem;
+}
+
+.member.disabled {
+  color: var(--muted);
+}
+
+.member small {
+  display: block;
+}
+
+dialog {
+  width: min(32rem, calc(100vw - 2rem));
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  color: var(--fg);
+  background: var(--bg);
+}
+
+dialog::backdrop {
+  background: rgb(0 0 0 / 0.4);
+}
+
+.recap dt {
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.recap dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.actions button {
+  flex: 1;
+}
+
+.steps {
+  padding-left: 1.25rem;
+}
+
+.steps li {
+  margin: 0.25rem 0;
+}
+
+.steps .done::marker {
+  color: var(--ok);
+}
+
+.steps .failed {
+  color: var(--danger);
+}
+
+.steps .skipped {
+  color: var(--muted);
+}
