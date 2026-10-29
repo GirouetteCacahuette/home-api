@@ -14,6 +14,10 @@ export async function registerSwagger(fastify: FastifyInstance) {
       tags: [
         { name: 'health', description: 'Liveness check' },
         { name: 'dogs', description: 'Dog pictures (Upstream: dog.ceo)' },
+        {
+          name: 'budget',
+          description: 'Shared expenses synced into Actual (Upstreams: Tricount, Actual Budget)',
+        },
       ],
     },
   });

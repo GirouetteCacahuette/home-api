@@ -1,0 +1,43 @@
+# The dev instance: tricount-actual-sync from dev, the local-stack actual-api
+# (../local-stack). Runs next to the real one: own port, own tricount list,
+# same Tricount session. Its variables are DEV_-prefixed so a shared .env
+# can never point it at the real actual-api.
+# Build: GIT_AUTH_TOKEN=<token> docker compose -f docker-compose.dev.yml build
+name: home-api-dev
+services:
+  api:
+    build:
+      context: .
+      args:
+        TRICOUNT_SYNC_REF: dev
+      secrets:
+        - GIT_AUTH_TOKEN
+    ports:
+      - "${DEV_PORT:-8001}:8000"
+    environment:
+      - PORT=8000
+      - HOST=0.0.0.0
+      - NODE_ENV=production
+      - LOG_LEVEL=info
+      - ACTUAL_API_URL=${DEV_ACTUAL_API_URL:-http://actual_api:3000}
+      - HOME_CURRENCY=${DEV_HOME_CURRENCY:-EUR}
+      - TRICOUNT_SESSION_DIR=/data/tricount-session
+      - TRICOUNT_CONFIG_DIR=/data/tricount-config
+      - TRICOUNT_MIN_INTERVAL_SECONDS=${DEV_TRICOUNT_MIN_INTERVAL_SECONDS:-30}
+    volumes:
+      - ${TRICOUNT_SESSION_DIR:-./data/tricount-session}:/data/tricount-session
+      - tricount-config-dev:/data/tricount-config
+    networks:
+      - local-stack
+
+volumes:
+  tricount-config-dev:
+
+secrets:
+  GIT_AUTH_TOKEN:
+    environment: GIT_AUTH_TOKEN
+
+networks:
+  local-stack:
+    external: true
+    name: local-stack_default

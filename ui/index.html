@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>home-api</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <h1>home-api</h1>
+
+      <section id="add-tricount">
+        <h2>Add a tricount</h2>
+
+        <form id="preview-form" novalidate>
+          <label for="link">Tricount share link or key</label>
+          <div class="row">
+            <input
+              id="link"
+              name="link"
+              type="text"
+              inputmode="url"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+              placeholder="https://tricount.com/…"
+              required
+            />
+            <button id="preview-button" type="submit">Preview</button>
+          </div>
+          <p id="preview-status" class="status" role="status" aria-live="polite"></p>
+        </form>
+
+        <form id="add-form" hidden novalidate>
+          <p class="tricount">
+            <strong id="tricount-title"></strong>
+            <span class="muted"
+              >(<span id="tricount-key"></span>, <span id="tricount-currency"></span>)</span
+            >
+          </p>
+
+          <div id="currency-blocked" class="blocked" hidden></div>
+
+          <fieldset id="member-fieldset">
+            <legend>Which member are you?</legend>
+            <div id="members"></div>
+          </fieldset>
+
+          <label for="account-name">Actual account to create</label>
+          <input id="account-name" type="text" autocomplete="off" required />
+          <p id="account-name-status" class="hint" aria-live="polite"></p>
+
+          <button id="add-button" type="submit" disabled>Add…</button>
+        </form>
+
+        <div id="result" hidden>
+          <h3 id="result-title"></h3>
+          <p id="result-message"></p>
+          <ol id="result-steps" class="steps"></ol>
+          <p id="result-orphan" class="blocked" hidden></p>
+          <button id="restart-button" type="button">Add another tricount</button>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="confirm-dialog" aria-labelledby="confirm-title">
+      <h3 id="confirm-title">Add this tricount?</h3>
+      <dl class="recap">
+        <dt>Tricount</dt>
+        <dd>
+          <span id="recap-title"></span> <span class="muted">(<span id="recap-key"></span>)</span>
+        </dd>
+        <dt>You are</dt>
+        <dd id="recap-member"></dd>
+        <dt>Account to create in Actual</dt>
+        <dd id="recap-account"></dd>
+        <dt>Currency</dt>
+        <dd id="recap-currency"></dd>
+      </dl>
+      <p id="confirm-status" class="status" role="status" aria-live="polite"></p>
+      <div class="actions">
+        <button id="cancel-button" type="button" class="secondary">Cancel</button>
+        <button id="confirm-button" type="button">Confirm</button>
+      </div>
+    </dialog>
+  </body>
+</html>
