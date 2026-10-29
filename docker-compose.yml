@@ -1,6 +1,13 @@
+# The real instance: tricount-actual-sync from main, the real actual-api.
+# Build: GIT_AUTH_TOKEN=<token> docker compose build (see README).
 services:
   api:
-    build: .
+    build:
+      context: .
+      args:
+        TRICOUNT_SYNC_REF: main
+      secrets:
+        - GIT_AUTH_TOKEN
     ports:
       - "${PORT:-8000}:8000"
     environment:
@@ -8,14 +15,30 @@ services:
       - HOST=0.0.0.0
       - NODE_ENV=production
       - LOG_LEVEL=info
+      - ACTUAL_API_URL=${ACTUAL_API_URL:?set ACTUAL_API_URL to the real actual-api}
+      - HOME_CURRENCY=${HOME_CURRENCY:-EUR}
+      - TRICOUNT_SESSION_DIR=/data/tricount-session
+      - TRICOUNT_CONFIG_DIR=/data/tricount-config
     env_file:
       - path: ./.env
         required: false
+    volumes:
+      # Shared with the dev instance and the tricount-actual-sync CLI: one
+      # Tricount device, one rate limiter.
+      - ${TRICOUNT_SESSION_DIR:-./data/tricount-session}:/data/tricount-session
+      - tricount-config:/data/tricount-config
     restart: unless-stopped
     # To let future Operations reach other self-hosted apps by container name,
     # join their Docker network (it must already exist):
     # networks:
     #   - apps
+
+volumes:
+  tricount-config:
+
+secrets:
+  GIT_AUTH_TOKEN:
+    environment: GIT_AUTH_TOKEN
 
 # networks:
 #   apps:
